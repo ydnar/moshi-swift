@@ -1,14 +1,8 @@
 // swift-tools-version:6.0
 import PackageDescription
 
-// MoshiLib links MLX Swift (Metal), so this package builds only on Apple
-// platforms with Apple Silicon. Sources keep their existing flat layout: the
-// MoshiLib/ directory, addressed with an explicit `path:`.
-//
-// Only the MoshiLib library is vended. The Xcode project's MoshiCLI target is
-// not a SwiftPM target: it depends on swift-transformers' `Hub`, which that
-// package exposes only as an internal target, not as a product a SwiftPM
-// manifest can depend on. The CLI remains available through the Xcode project.
+// A pure SwiftPM package. MoshiLib links MLX Swift (Metal), so it builds only on
+// Apple platforms with Apple Silicon.
 let package = Package(
     name: "moshi-swift",
     platforms: [
@@ -29,8 +23,7 @@ let package = Package(
                 .product(name: "MLXFast", package: "mlx-swift"),
                 .product(name: "MLXNN", package: "mlx-swift"),
                 .product(name: "MLXRandom", package: "mlx-swift"),
-            ],
-            path: "MoshiLib"
+            ]
         ),
     ]
 )
