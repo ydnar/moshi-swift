@@ -4,10 +4,8 @@
 
 import AVFoundation
 import Foundation
-import Hub
 import MLX
 import MLXNN
-import MoshiLib
 
 public class ASR {
     let moshi: LM

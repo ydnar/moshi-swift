@@ -402,13 +402,13 @@ public class LMGen {
             } else {
                 audioToken = MLXArray([self.model.cfg.audioPaddingToken()]).reshaped([1, 1])
             }
-            if (audioToken .== MLXArray(ungeneratedToken)).any().item<Bool>() {
+            if (audioToken .== MLXArray(ungeneratedToken)).any().item(Bool.self) {
                 fatalError("ungenerated value in audio tokens, cb \(cbIdx), step \(stepIdx)")
             }
             assert(audioToken.shape == [1, 1])
             audioIds.append(audioToken)
         }
-        if (textIds .== MLXArray(ungeneratedToken)).any().item<Bool>() {
+        if (textIds .== MLXArray(ungeneratedToken)).any().item(Bool.self) {
             fatalError("ungenerated value in text tokens, step \(stepIdx)")
         }
         assert(textIds.shape == [1, 1])
@@ -442,10 +442,10 @@ public class LMGen {
             return nil
         }
         let tokens = self.genSequence[0..., 1...self.mainCodebooks, genIdx]
-        if (tokens .== MLXArray(ungeneratedToken)).any().item<Bool>() {
+        if (tokens .== MLXArray(ungeneratedToken)).any().item(Bool.self) {
             fatalError("ungenerated value in text tokens, step \(stepIdx)")
         }
-        if (tokens .== MLXArray(self.model.cfg.audioPaddingToken())).any().item<Bool>() {
+        if (tokens .== MLXArray(self.model.cfg.audioPaddingToken())).any().item(Bool.self) {
             return nil
         }
         return tokens
