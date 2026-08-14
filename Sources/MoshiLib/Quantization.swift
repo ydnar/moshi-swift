@@ -2,6 +2,7 @@
 // This source code is licensed under the license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Foundation
 import MLX
 import MLXFast
 import MLXNN
@@ -26,8 +27,12 @@ class EuclideanCodebook: Module {
         self.c2 = self.embedding.square().sum(axis: -1) / 2
     }
 
-    override func update(parameters: ModuleParameters, verify: Module.VerifyUpdate) throws -> Self {
-        try super.update(parameters: parameters, verify: verify)
+    override func update(
+        parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
+        modulePath: [String] = []
+    ) throws -> Self {
+        try super.update(
+            parameters: parameters, verify: verify, path: path, modulePath: modulePath)
         let clusterUsage = maximum(self._clusterUsage.wrappedValue, self.epsilon)[0..., .newAxis]
         self.embedding = self._embeddingSum.wrappedValue / clusterUsage
         self.c2 = self.embedding.square().sum(axis: -1) / 2
