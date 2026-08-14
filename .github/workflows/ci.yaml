@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.swift'
+      - 'Package.swift'
+      - 'Package.resolved'
+      - '.github/workflows/ci.yaml'
+  pull_request:
+    paths:
+      - '**/*.swift'
+      - 'Package.swift'
+      - 'Package.resolved'
+      - '.github/workflows/ci.yaml'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # MoshiLib links MLX Swift (Metal), so it builds only on Apple Silicon. There
+  # is no portable target, hence no Linux job. macos-26 is a pinned ARM64 image.
+  macos:
+    name: macOS · MoshiLib
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      # Select the newest Xcode for its macOS SDK.
+      - name: Use the newest installed Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+      # No released Xcode ships Swift 6.3 yet, so install the swift.org toolchain
+      # and put it on PATH. It uses the selected Xcode's macOS SDK.
+      - name: Install Swift 6.3.3
+        run: |
+          v="6.3.3"
+          pkg="swift-${v}-RELEASE-osx.pkg"
+          curl -fSL -o "${pkg}" "https://download.swift.org/swift-${v}-release/xcode/swift-${v}-RELEASE/${pkg}"
+          sudo installer -pkg "${pkg}" -target /
+          echo "/Library/Developer/Toolchains/swift-${v}-RELEASE.xctoolchain/usr/bin" >> "${GITHUB_PATH}"
+      - name: Swift version
+        run: swift --version
+      - name: Build and test
+        run: swift test
