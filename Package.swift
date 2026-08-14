@@ -36,5 +36,12 @@ let package = Package(
                 "Seanet.swift",
             ]
         ),
+        .testTarget(
+            name: "MoshiLibTests",
+            dependencies: [
+                "MoshiLib",
+                .product(name: "MLX", package: "mlx-swift"),
+            ]
+        ),
     ]
 )
