@@ -24,16 +24,12 @@ let package = Package(
                 .product(name: "MLXNN", package: "mlx-swift"),
                 .product(name: "MLXRandom", package: "mlx-swift"),
             ],
-            // The Mimi codec files, and the ASR and Qwen variants that build on
-            // them, need updates for mlx-swift 0.31 and are not used by the
-            // language-model path. Re-include them with the Mimi round-trip.
+            // The ASR and Qwen variants build on the Mimi codec and are not yet
+            // needed, so they stay excluded until they get their own pass. The
+            // Mimi codec files (Conv, Seanet, Mimi, Quantization) are now in.
             exclude: [
                 "ASR.swift",
-                "Conv.swift",
-                "Mimi.swift",
-                "Quantization.swift",
                 "Qwen2.swift",
-                "Seanet.swift",
             ]
         ),
         .testTarget(

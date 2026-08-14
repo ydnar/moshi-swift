@@ -2,6 +2,7 @@
 // This source code is licensed under the license found in the
 // LICENSE file in the root directory of this source tree.
 
+import Foundation
 import MLX
 import MLXFast
 import MLXNN
@@ -26,7 +27,7 @@ class Conv1d: Module, UnaryLayer {
         dilation: Int = 1,
         bias: Bool = true
     ) {
-        let scale = sqrt(1 / Float(inputChannels * kernelSize))
+        let scale = sqrt(1.0 / Float(inputChannels * kernelSize))
 
         self._weight.wrappedValue = uniform(
             low: -scale, high: scale, [outputChannels, kernelSize, inputChannels / groups])
@@ -73,7 +74,7 @@ class ConvTransposed1d: Module, UnaryLayer {
         groups: Int = 1,
         bias: Bool = true
     ) {
-        let scale = sqrt(1 / Float(inputChannels * kernelSize))
+        let scale = sqrt(1.0 / Float(inputChannels * kernelSize))
 
         self._weight.wrappedValue = uniform(
             low: -scale, high: scale, [outputChannels / groups, kernelSize, inputChannels])
@@ -98,8 +99,12 @@ class ConvTransposed1d: Module, UnaryLayer {
         }
     }
 
-    override func update(parameters: ModuleParameters, verify: Module.VerifyUpdate) throws -> Self {
-        try super.update(parameters: parameters, verify: verify)
+    override func update(
+        parameters: ModuleParameters, verify: VerifyUpdate, path: [String] = [],
+        modulePath: [String] = []
+    ) throws -> Self {
+        try super.update(
+            parameters: parameters, verify: verify, path: path, modulePath: modulePath)
         if groups == inC && groups == outC {
             let eye = repeated(
                 eye(outC).asType(weight.dtype).reshaped([outC, 1, outC]), count: kSize, axis: 1)
